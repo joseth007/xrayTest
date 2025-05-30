@@ -37,3 +37,15 @@ steps:
 #   - XRAY_CLIENT_ID: Your Xray API Client ID
 #   - XRAY_CLIENT_SECRET: Your Xray API Client Secret
 # These variables will be securely injected into the pipeline at runtime.
+
+- script: |
+    cat reports/results.xml  # Esto imprime el contenido del archivo para ver si está bien formado.
+  displayName: 'Check results file'
+  condition: always()
+
+- bash: |
+    set -x
+    export token=$(curl -H "Content-Type: application/json" -X POST --data "{ \"client_id\": \"$CLIENT_ID\",\"client_secret\": \"$CLIENT_SECRET\" }" "$(xray_endpoint)/api/v2/authenticate"| tr -d '"')
+    curl -X POST -H "Content-Type: text/xml" -H "Authorization: Bearer $token"  --data @"reports/results.xml" $(xray_endpoint)/api/v2/import/execution/junit?projectKey=CT&testPlanKey=${{ parameters.testplan }}
+  displayName: 'Import results to Xray cloud'
+  condition: always()
