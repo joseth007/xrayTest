@@ -1,25 +1,25 @@
 import pytest
 
-@pytest.mark.jira('CT-1252')
-def test_user_login_successful():
+def test_user_login_successful(record_property):
+    record_property("test_key", "CT-1252")
     """
     This test verifies that a user can log in successfully.
     """
     assert True
 
-@pytest.mark.jira('CT-1315')
-def test_invalid_password_login_fails():
+def test_invalid_password_login_fails(record_property):
+    record_property("test_key", "CT-1315")
     """
     This test verifies that login fails with an invalid password.
     """
     assert False, "Simulating a failed test for PROJ-124"
 
-@pytest.mark.jira('CT-1311')
-def test_forgot_password_link_present():
+def test_forgot_password_link_present(record_property):
+    record_property("test_key", "CT-1311")
     """
     This test checks if the 'Forgot Password' link is visible.
     """
     assert 1 + 1 == 2
 
-def test_unmapped_example():
+def test_unmapped_example(record_property):
     assert True
