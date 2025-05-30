@@ -22,7 +22,8 @@ steps:
   displayName: 'Install dependencies'
 
 - script: |
-    pytest --junitxml=results.xml
+    mkdir -p reports
+    pytest --junitxml=reports/results.xml
   displayName: 'Run Pytest and Upload to Xray Cloud'
   env:
     # Expose Azure DevOps secret variables as environment variables for the script
