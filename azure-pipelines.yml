@@ -27,8 +27,8 @@ steps:
   displayName: 'Install dependencies'
 
 - script: |
-    mkdir -p reports
-    pytest --junitxml=reports/results.xml
+    mkdir -p allure-results
+    pytest --alluredir=allure-results ./test_examples.py
   displayName: 'Run Pytest and Upload to Xray Cloud'
   env:
     # Expose Azure DevOps secret variables as environment variables for the script
@@ -43,14 +43,20 @@ steps:
 #   - XRAY_CLIENT_SECRET: Your Xray API Client Secret
 # These variables will be securely injected into the pipeline at runtime.
 
-- script: |
-    cat reports/results.xml  # Esto imprime el contenido del archivo para ver si está bien formado.
-  displayName: 'Check results file'
-  condition: always()
-
 - bash: |
     set -x
-    export token=$(curl -H "Content-Type: application/json" -X POST --data "{ \"client_id\": \"$CLIENT_ID\",\"client_secret\": \"$CLIENT_SECRET\" }" "$(xray_endpoint)/api/v2/authenticate"| tr -d '"')
-    curl -X POST -H "Content-Type: text/xml" -H "Authorization: Bearer $token"  --data @"reports/results.xml" $(xray_endpoint)/api/v2/import/execution/junit?projectKey=CT&testPlanKey=${{ parameters.testplan }}
-  displayName: 'Import results to Xray cloud'
+    # Package Allure results
+    zip -r allure-results.zip allure-results
+
+    # Authenticate and get token
+    export token=$(curl -H "Content-Type: application/json" -X POST --data "{ \"client_id\": \"$(XRAY_CLIENT_ID)\",\"client_secret\": \"$(XRAY_CLIENT_SECRET)\" }" "$(XRAY_BASE_URL)/api/v2/authenticate"| tr -d '"')
+
+    # Import Allure results to Xray
+    curl -X POST -H "Content-Type: application/zip" -H "Authorization: Bearer $token" --data @"allure-results.zip" "$(XRAY_BASE_URL)/api/v2/import/execution/allure?projectKey=CT&testPlanKey=${{ parameters.testplan }}"
+  displayName: 'Package and Import Allure Results to Xray'
+  env:
+    # Expose Azure DevOps secret variables as environment variables for the script
+    XRAY_BASE_URL: $(XRAY_BASE_URL)
+    XRAY_CLIENT_ID: $(XRAY_CLIENT_ID)
+    XRAY_CLIENT_SECRET: $(XRAY_CLIENT_SECRET)
   condition: always()

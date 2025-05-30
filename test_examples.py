@@ -1,4 +1,5 @@
 import pytest
+import allure
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -46,6 +47,7 @@ def test_successful_login_saucedemo(record_property):
     driver.find_element(By.ID, "login-button").click()
 
     assert "inventory.html" in driver.current_url
+    allure.attach(driver.get_screenshot_as_png(), name="login_success_screenshot", attachment_type=allure.attachment_type.PNG)
 
     driver.quit()
 
@@ -68,4 +70,5 @@ def test_failed_login_saucedemo(record_property):
         EC.presence_of_element_located((By.XPATH, "//h3[@data-test='error']"))
     )
     assert "Epic sadface: Sorry, this user has been locked out." in error_message_element.text
+    allure.attach(driver.get_screenshot_as_png(), name="login_failure_screenshot", attachment_type=allure.attachment_type.PNG)
     driver.quit()
