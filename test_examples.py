@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 
 def test_user_login_successful(record_property):
     record_property("test_key", "CT-1252")
@@ -33,9 +34,10 @@ def test_unmapped_example(record_property):
 
 def test_successful_login_saucedemo(record_property):
     record_property("test_key", "CT-3283")
-    chrome_options.add_argument("--headless")
+    options = Options()
+    options.add_argument("--headless")
 
-    driver = webdriver.Chrome(options=chrome_options))
+    driver = webdriver.Chrome(options=options)
 
     driver.get("https://www.saucedemo.com/")
 
@@ -50,10 +52,10 @@ def test_successful_login_saucedemo(record_property):
 
 def test_failed_login_saucedemo(record_property):
     record_property("test_key", "CT-3284")
-    chrome_options.add_argument("--headless")
+    options = Options()
+    options.add_argument("--headless")
 
-    driver = webdriver.Chrome(options=chrome_options))
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome(options=options)
 
     driver.get("https://www.saucedemo.com/")
 
