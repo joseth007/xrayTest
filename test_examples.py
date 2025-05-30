@@ -1,4 +1,10 @@
 import pytest
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 
 def test_user_login_successful(record_property):
     record_property("test_key", "CT-1252")
@@ -23,3 +29,53 @@ def test_forgot_password_link_present(record_property):
 
 def test_unmapped_example(record_property):
     assert True
+
+
+def test_successful_login_saucedemo(record_property):
+    record_property("test_key", "SAUCE_LOGIN_OK")
+    driver = None  # Initialize driver to None for robust finally block
+    try:
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+        driver.get("https://www.saucedemo.com/")
+
+        # Wait for username field to be present
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "user-name"))
+        )
+
+        driver.find_element(By.ID, "user-name").send_keys("standard_user")
+        driver.find_element(By.ID, "password").send_keys("secret_sauce")
+        driver.find_element(By.ID, "login-button").click()
+
+        # Wait for inventory page to load by checking for a known element
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "inventory_container"))
+        )
+        assert "inventory.html" in driver.current_url
+    finally:
+        if driver:
+            driver.quit()
+
+def test_failed_login_saucedemo(record_property):
+    record_property("test_key", "SAUCE_LOGIN_FAIL")
+    driver = None  # Initialize driver to None
+    try:
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+        driver.get("https://www.saucedemo.com/")
+
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "user-name"))
+        )
+
+        driver.find_element(By.ID, "user-name").send_keys("locked_out_user")
+        driver.find_element(By.ID, "password").send_keys("secret_sauce")
+        driver.find_element(By.ID, "login-button").click()
+
+        # Wait for error message to be present
+        error_message_element = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//h3[@data-test='error']"))
+        )
+        assert "Epic sadface: Sorry, this user has been locked out." in error_message_element.text
+    finally:
+        if driver:
+            driver.quit()

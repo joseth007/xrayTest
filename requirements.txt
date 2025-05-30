@@ -1,2 +1,4 @@
 pytest==8.3.2
 pytest-xray-reporter==0.1.18 # Verifica la última versión en PyPI
+selenium
+webdriver-manager
