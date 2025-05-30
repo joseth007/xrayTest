@@ -32,7 +32,7 @@ def test_unmapped_example(record_property):
 
 
 def test_successful_login_saucedemo(record_property):
-    record_property("test_key", "SAUCE_LOGIN_OK")
+    record_property("test_key", "CT-3283")
     driver = None  # Initialize driver to None for robust finally block
     try:
         driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
@@ -57,7 +57,7 @@ def test_successful_login_saucedemo(record_property):
             driver.quit()
 
 def test_failed_login_saucedemo(record_property):
-    record_property("test_key", "SAUCE_LOGIN_FAIL")
+    record_property("test_key", "CT-3284")
     driver = None  # Initialize driver to None
     try:
         driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
