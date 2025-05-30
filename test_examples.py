@@ -35,7 +35,7 @@ def test_successful_login_saucedemo(record_property):
     record_property("test_key", "CT-3283")
     driver = None  # Initialize driver to None for robust finally block
     try:
-        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+        driver = webdriver.Chrome()
         driver.get("https://www.saucedemo.com/")
 
         # Wait for username field to be present
@@ -60,7 +60,7 @@ def test_failed_login_saucedemo(record_property):
     record_property("test_key", "CT-3284")
     driver = None  # Initialize driver to None
     try:
-        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+        driver = webdriver.Chrome()
         driver.get("https://www.saucedemo.com/")
 
         WebDriverWait(driver, 10).until(
