@@ -13,7 +13,7 @@ pool:
 
 variables:
   # It's a good practice to define the Python version as a variable
-  python.version: '3.9'
+  python.version: '3.12.3'
 
 steps:
 - task: UsePythonVersion@0
