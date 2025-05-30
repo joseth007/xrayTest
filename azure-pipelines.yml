@@ -52,7 +52,7 @@ steps:
     export token=$(curl -H "Content-Type: application/json" -X POST --data "{ \"client_id\": \"$(XRAY_CLIENT_ID)\",\"client_secret\": \"$(XRAY_CLIENT_SECRET)\" }" "$(XRAY_BASE_URL)/api/v2/authenticate"| tr -d '"')
 
     # Import Allure results to Xray
-    curl -X POST -H "Content-Type: application/zip" -H "Authorization: Bearer $token" --data @"allure-results.zip" "$(XRAY_BASE_URL)/api/v2/import/execution/allure?projectKey=CT&testPlanKey=${{ parameters.testplan }}"
+    curl -X POST -H "Content-Type: application/zip" -H "Authorization: Bearer $token" --data-binary @"allure-results.zip" "$(XRAY_BASE_URL)/api/v2/import/execution/allure?projectKey=CT&testPlanKey=${{ parameters.testplan }}"
   displayName: 'Package and Import Allure Results to Xray'
   env:
     # Expose Azure DevOps secret variables as environment variables for the script
