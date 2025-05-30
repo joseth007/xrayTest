@@ -22,7 +22,7 @@ steps:
   displayName: 'Install dependencies'
 
 - script: |
-    pytest --junitxml=results.xml --xray-cloud -o xray_cloud_base_url=$(XRAY_BASE_URL) -o xray_cloud_client_id=$(XRAY_CLIENT_ID) -o xray_cloud_client_secret=$(XRAY_CLIENT_SECRET)
+    pytest --junitxml=results.xml
   displayName: 'Run Pytest and Upload to Xray Cloud'
   env:
     # Expose Azure DevOps secret variables as environment variables for the script
