@@ -3,7 +3,6 @@ import pytest
 # Necesitarás importar pytest para el marcador
 # No necesitas importar 'xray' directamente desde el plugin, solo el marcador
 
-@pytest.mark.xray("PROJ-123") # Asocia esta prueba con el Test Case PROJ-123
 def test_user_login_successful():
     """
     This test verifies that a user can log in successfully.
@@ -11,7 +10,6 @@ def test_user_login_successful():
     """
     assert True
 
-@pytest.mark.xray("PROJ-124") # Asocia esta prueba con el Test Case PROJ-124
 def test_invalid_password_login_fails():
     """
     This test verifies that login fails with an invalid password.
@@ -19,7 +17,6 @@ def test_invalid_password_login_fails():
     """
     assert False, "Simulating a failed test for PROJ-124"
 
-@pytest.mark.xray("PROJ-125") # Asocia esta prueba con el Test Case PROJ-125
 def test_forgot_password_link_present():
     """
     This test checks if the 'Forgot Password' link is visible.
