@@ -33,8 +33,9 @@ def test_unmapped_example(record_property):
 
 def test_successful_login_saucedemo(record_property):
     record_property("test_key", "CT-3283")
+    chrome_options.add_argument("--headless")
 
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome(options=chrome_options))
 
     driver.get("https://www.saucedemo.com/")
 
@@ -49,6 +50,9 @@ def test_successful_login_saucedemo(record_property):
 
 def test_failed_login_saucedemo(record_property):
     record_property("test_key", "CT-3284")
+    chrome_options.add_argument("--headless")
+
+    driver = webdriver.Chrome(options=chrome_options))
     driver = webdriver.Chrome()
 
     driver.get("https://www.saucedemo.com/")
