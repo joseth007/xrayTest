@@ -8,7 +8,7 @@ pool:
 
 variables:
   # It's a good practice to define the Python version as a variable
-  python.version: '3.9'
+  python.version: '3.12.3'
 
 steps:
 - task: UsePythonVersion@0
@@ -22,13 +22,13 @@ steps:
   displayName: 'Install dependencies'
 
 - script: |
-    pytest --junitxml=results.xml --xray-cloud -o xray_cloud_base_url=$(XRAY_BASE_URL) -o xray_cloud_client_id=$(XRAY_CLIENT_ID) -o xray_cloud_client_secret=$(XRAY_CLIENT_SECRET)
+    pytest --junitxml=results.xml --xray-cloud -o xray_cloud_base_url=$(xray_endpoint) -o xray_cloud_client_id=$(client_id) -o xray_cloud_client_secret=$(client_secret)
   displayName: 'Run Pytest and Upload to Xray Cloud'
   env:
     # Expose Azure DevOps secret variables as environment variables for the script
-    XRAY_BASE_URL: $(XRAY_BASE_URL)
-    XRAY_CLIENT_ID: $(XRAY_CLIENT_ID)
-    XRAY_CLIENT_SECRET: $(XRAY_CLIENT_SECRET)
+    XRAY_BASE_URL: $(xray_endpoint)
+    XRAY_CLIENT_ID: $client_id
+    XRAY_CLIENT_SECRET: $(client_secret)
 
 # Note: To make this pipeline functional, you need to configure the following
 # secret variables in your Azure DevOps project settings (under Pipelines -> Library):
