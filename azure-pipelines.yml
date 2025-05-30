@@ -1,5 +1,10 @@
 # azure-pipelines.yml
 
+parameters:
+  - name: "testplan"
+    type: string
+    default: "CT-1276"
+
 trigger:
 - main
 
@@ -22,13 +27,18 @@ steps:
   displayName: 'Install dependencies'
 
 - script: |
-    pytest --junitxml=results.xml
+    pytest --junitxml=results.xml --xray-cloud -o xray_cloud_base_url=$(xray_endpoint) -o xray_cloud_client_id=$(client_id) -o xray_cloud_client_secret=$(client_secret)
   displayName: 'Run Pytest and Upload to Xray Cloud'
   env:
     # Expose Azure DevOps secret variables as environment variables for the script
     XRAY_BASE_URL: $(xray_endpoint)
-    XRAY_CLIENT_ID: $(client_id)
+    XRAY_CLIENT_ID: $client_id
     XRAY_CLIENT_SECRET: $(client_secret)
+
+- script: |
+    cat reports/results.xml  # Esto imprime el contenido del archivo para ver si está bien formado.
+  displayName: 'Check results file'
+  condition: always()
 
 # Note: To make this pipeline functional, you need to configure the following
 # secret variables in your Azure DevOps project settings (under Pipelines -> Library):
@@ -36,3 +46,10 @@ steps:
 #   - XRAY_CLIENT_ID: Your Xray API Client ID
 #   - XRAY_CLIENT_SECRET: Your Xray API Client Secret
 # These variables will be securely injected into the pipeline at runtime.
+
+- bash: |
+    set -x
+    export token=$(curl -H "Content-Type: application/json" -X POST --data "{ \"client_id\": \"$CLIENT_ID\",\"client_secret\": \"$CLIENT_SECRET\" }" "$(xray_endpoint)/api/v2/authenticate"| tr -d '"')
+    curl -X POST -H "Content-Type: text/xml" -H "Authorization: Bearer $token"  --data @"reports/results.xml" $(xray_endpoint)/api/v2/import/execution/junit?projectKey=CT&testPlanKey=${{ parameters.testplan }}
+  displayName: 'Import results to Xray cloud'
+  condition: always()
