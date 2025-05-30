@@ -1,5 +1,10 @@
 # azure-pipelines.yml
 
+parameters:
+  - name: "testplan"
+    type: string
+    default: "CT-1276"
+
 trigger:
 - main
 
